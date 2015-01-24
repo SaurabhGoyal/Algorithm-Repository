@@ -2,7 +2,7 @@
 A collection of algorithms and programmes ,I use for competitive programming.
 
 <b> resources- </b>
-Directly usable(copy-paste) functions.<br>
+Directly usable(copy-paste) code.<br>
 - For algorithms , look into <b>library.java</b>
 - For data-structures, look into corresponding files.<br>
 
