@@ -1,8 +1,10 @@
 # Algorithm-Repository
 A collection of algorithms and programmes ,I use for competitive programming.
 
-# Resources-
-Directly usable(copy-paste) functions.
+<b> resources- </b>
+Directly usable(copy-paste) functions.<br>
+- For algorithms , look into <b>library.java</b>
+- For data-structures, look into corresponding files.<br>
 
-#cdc-
-Code for random problems, you can explore if you want.
+<b> cdc- </b>
+- Code for random problems, you can explore if you want.
