@@ -1,3 +1,4 @@
+import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.regex.Matcher;
@@ -297,6 +298,17 @@ public class Library {
 		return a;
 	}
 
+	public static String getGCDBig(String as, String bs) {
+		BigInteger a = new BigInteger(as);
+		BigInteger b = new BigInteger(bs);
+		while (!b.equals(BigInteger.ZERO)) {
+			BigInteger t = b;
+			b = a.mod(b);
+			a = t;
+		}
+		return a.toString();
+	}
+
 	public static long getNcr(long n, long r) {
 		long ans = 1;
 		r = r > n - r ? n - r : r;
@@ -329,6 +341,32 @@ public class Library {
 		}
 		return sieve;
 	}
+	
+	public static long maxDifferenceInArray(long[] arr, int n){
+		if(n<2) return 0;
+		long maxDiff=arr[1]-arr[0], minNumber = Math.min(arr[0],arr[1]);
+		for (int i = 2; i < arr.length ; i++){
+		    maxDiff = Math.max(maxDiff, (arr[i]-minNumber));
+		    minNumber = Math.min(minNumber, arr[i]);
+		}
+		return maxDiff;
+	}
+
+	public static int getLargestPrimeFactor(int n) {
+		int currentNumber = n;
+		int largestFactor = 0;
+		int counter = 2;
+		while (counter * counter <= currentNumber) {
+			if (currentNumber % counter == 0) {
+				currentNumber /= counter;
+				largestFactor = counter;
+			} else
+				counter++;
+		}
+		if (currentNumber > largestFactor)
+			largestFactor = currentNumber;
+		return largestFactor;
+	}
 
 	public static long getSumOfDigitsInPower(int base, int exp) {
 		if (exp == 0)
@@ -350,6 +388,12 @@ public class Library {
 		for (int digit : digits)
 			sum += digit;
 		return sum;
+	}
+
+	public static double getMaxArea(double a, double b, double c, double d) {
+		double s = (a + b + c + d) / 2;
+		double maxArea = Math.sqrt((s - a) * (s - b) * (s - c) * (s - d));
+		return maxArea;
 	}
 
 	public static long numOfDigitsInFactorialN(int n) {
@@ -383,31 +427,30 @@ public class Library {
 		return sb.toString();
 	}
 
-	public static String nextBig(char[] arr, int n){
+	public static String nextBig(char[] arr, int n) {
 		String big = "NO NXTBIG";
 		int start = -1, end = -1;
-		for(int i=0;i<n-1;i++){
-			if(arr[i] < arr[i+1]){
+		for (int i = 0; i < n - 1; i++) {
+			if (arr[i] < arr[i + 1]) {
 				start = i;
 			}
 		}
-		if(start != -1){
-			for(int i=start+1;i<n;i++){
-				if(arr[i] > arr[start]){
+		if (start != -1) {
+			for (int i = start + 1; i < n; i++) {
+				if (arr[i] > arr[start]) {
 					end = i;
 				}
 			}
 			char temp = arr[start];
 			arr[start] = arr[end];
 			arr[end] = temp;
-			char[] first = Arrays.copyOfRange(arr, 0, start+1);
-			char[] second = Arrays.copyOfRange(arr, start+1, n);
+			char[] first = Arrays.copyOfRange(arr, 0, start + 1);
+			char[] second = Arrays.copyOfRange(arr, start + 1, n);
 			Arrays.sort(second);
-			big = arrayToString(first)+arrayToString(second);
+			big = arrayToString(first) + arrayToString(second);
 		}
 		return big;
 	}
-
 
 	public static String toCamelCase(String variableName) {
 		StringBuffer res = new StringBuffer("");
@@ -520,7 +563,7 @@ public class Library {
 	}
 
 	public static Pair knapsackZeroOneWithLeastWeight(int w, Pair[] arr, int n) {
-		//Pair class defined at the end of the file.
+		// Pair class defined at the end of the file.
 		Pair[][] dp = new Pair[n + 1][w + 1];
 		for (int i = 0; i <= n; i++) {
 			for (int j = 0; j <= w; j++) {
