@@ -255,6 +255,51 @@ public class Library {
 			arr[arr.length - i - 1] = temp;
 		}
 	}
+	
+	public static int getKthDigitOfNumberSequence(long n, long k) {
+		long[] sum = new long[20];
+		sum[0] = 0;
+		for (int i = 1; i <= 19; i++) {
+			long digNum = i * (9 * (long) Math.pow(10, i - 1));
+			sum[i] = sum[i - 1] + digNum;
+		}
+		int numOfDig = (n+"").length();
+		int dig = 0;
+		for (int i = 1; i <= numOfDig; i++) {
+			if (k <= sum[i]) {
+				dig = i;
+				break;
+			}
+		}
+		k -= sum[dig - 1];
+		long numberOffset = (k - 1) / dig;
+		String reqdNum = ((long) Math.pow(10, dig - 1) + numberOffset) + "";
+		int digitOffset = (int) (k % dig);
+		if (digitOffset == 0)
+			digitOffset = dig;
+		digitOffset--;
+		return reqdNum.charAt(digitOffset)-'0';
+	}
+
+	
+	public static double getTetrahedronVolume(double AB, double BC, double CA,
+			double DA, double DB, double DC) {
+		// NOT_TESTED
+		// assuming base is ABC and another vertex is D.
+		double volume;
+		double ud = DA*DA + DB*DB - AB*AB;
+		double vd = DC*DC + DA*DA - CA*CA;
+		double wd = DB*DB + DC*DC - BC*BC;
+		double u2 = DA*DA;
+		double v2 = DB*DB;
+		double w2 = DC*DC;
+		double ud2 = ud*ud;
+		double vd2 = vd*vd;
+		double wd2 = wd*wd;
+		double quantity = 4*u2*v2*w2 - u2*ud2 - v2*vd2 - w2*wd2 + ud*vd*wd;
+		volume = Math.sqrt(quantity)/12.0;		
+		return volume;
+	}
 
 	public static int getBitsCount(long num) {
 		if (num == 0)
@@ -275,6 +320,31 @@ public class Library {
 			value >>= 1;
 		}
 		return count;
+	}
+	
+	public static int longestCommonPrefixLength(String s1, String s2){
+		int ans = 0;
+		int len = Math.min(s1.length(), s2.length());
+		for(int i=0;i<len;i++){
+			if(s1.charAt(i)==s2.charAt(i)) ans++;
+			else break;
+		}
+		return ans;
+	}
+	
+	public static long numOfDistinctSubstrings(String str){
+		long ans = 0;
+		int len = str.length();
+		String[] suffixArray = new String[len];
+		for(int i=0;i<len;i++){
+			suffixArray[i] = str.substring(i);
+		}
+		Arrays.sort(suffixArray);
+		ans = suffixArray[0].length();
+		for(int i=1;i<len;i++){
+			ans += suffixArray[i].length() - longestCommonPrefixLength(suffixArray[i], suffixArray[i-1]);
+		}
+		return ans;
 	}
 
 	public static long powerWithMod(long num, long exp, long mod) {
@@ -342,14 +412,36 @@ public class Library {
 		return sieve;
 	}
 	
-	public static long maxDifferenceInArray(long[] arr, int n){
-		if(n<2) return 0;
-		long maxDiff=arr[1]-arr[0], minNumber = Math.min(arr[0],arr[1]);
-		for (int i = 2; i < arr.length ; i++){
-		    maxDiff = Math.max(maxDiff, (arr[i]-minNumber));
-		    minNumber = Math.min(minNumber, arr[i]);
+	public static long maxSumSubArray(long[] arr, int n) {
+		long currentMax = arr[0];
+		long maxSum = arr[0];
+		for(int i=1;i<n;i++){
+			currentMax = Math.max(arr[i], arr[i]+currentMax);
+			maxSum = Math.max(maxSum, currentMax);
+		}
+		return maxSum;
+	}
+
+	public static long maxDifferenceInArray(long[] arr, int n) {
+		if (n < 2)
+			return 0;
+		long maxDiff = arr[1] - arr[0], minNumber = Math.min(arr[0], arr[1]);
+		for (int i = 2; i < arr.length; i++) {
+			maxDiff = Math.max(maxDiff, (arr[i] - minNumber));
+			minNumber = Math.min(minNumber, arr[i]);
 		}
 		return maxDiff;
+	}
+	
+	public static boolean isSumPossiblewithTwo(long[] arr, int n, long sum){
+		Arrays.sort(arr);
+		int i=0,j=n-1;
+		while(i<j){
+			if(arr[i]+arr[j]<sum) i++;
+			else if(arr[i]+arr[j]>sum) j--;
+			else return true;
+		}
+		return false;
 	}
 
 	public static int getLargestPrimeFactor(int n) {
@@ -507,6 +599,67 @@ public class Library {
 		return sum[requiredSum];
 	}
 
+	public static int longestCommonSubsequence(String a, String b) {
+		int n = a.length();
+		int m = b.length();
+		int[][] dp = new int[n + 1][m + 1];
+		for (int i = 0; i <= n; i++) {
+			for (int j = 0; j <= m; j++) {
+				if (i == 0 || j == 0)
+					dp[i][j] = 0;
+				else {
+					if (a.charAt(i - 1) == b.charAt(j - 1))
+						dp[i][j] = dp[i - 1][j - 1] + 1;
+					else
+						dp[i][j] = Math.max(dp[i][j - 1], dp[i - 1][j]);
+				}
+			}
+		}
+		return dp[n][m];
+	}
+	
+	public static int longestCommonSubsequenceOptimized(String a, String b) {
+		int n = a.length();
+		int m = b.length();
+		int[][] dp = new int[2][m+1];
+		for (int i = 0; i <= n; i++) {
+			for (int j = 0; j <= m; j++) {
+				if (i == 0 || j == 0)
+					dp[1][j] = 0;
+				else {
+					if (a.charAt(i - 1) == b.charAt(j - 1))
+						dp[1][j] = dp[0][j-1]+1;
+					else
+						dp[1][j] = Math.max(dp[1][j-1], dp[0][j]);
+				}
+			}
+			for(int j=0;j<=m;j++) dp[0][j] = dp[1][j];
+		}
+		return dp[1][m];
+	}
+
+	public static int longestCommonSubstring(String a, String b) {
+		int n = a.length();
+		int m = b.length();
+		int maxLen = -1;
+		int[][] dp = new int[n + 1][m + 1];
+		//System.out.println("matching " + a + ", " + b);
+		for (int i = 0; i <= n; i++) {
+			for (int j = 0; j <= m; j++) {
+				if (i == 0 || j == 0)
+					dp[i][j] = 0;
+				else {
+					if (a.charAt(i - 1) == b.charAt(j - 1))
+						dp[i][j] = dp[i - 1][j - 1] + 1;
+					else
+						dp[i][j] = 0;
+				}
+				maxLen = Math.max(maxLen, dp[i][j]);
+			}
+		}
+		return maxLen;
+	}
+
 	public static int maxSumSubsequence(int[] arr) {
 		int[] maxsum = new int[arr.length];
 		maxsum[0] = arr[0];
@@ -614,8 +767,54 @@ public class Library {
 						+ costMatrix[i][j];
 		return minCost[r][c];
 	}
+	
+	public static long[][] powerMatrix(long[][] m, long exp, long mod) {
+		if (exp == 1)
+			return m;
+		if (exp == 2)
+			return matrixMultiplication(m, m, mod);
+		long[][] subMatrix = powerMatrix(m, exp / 2, mod);
+		long[][] result = matrixMultiplication(subMatrix, subMatrix, mod);
+		if (exp % 2 == 1)
+			result = matrixMultiplication(result, m, mod);
+		return result;
+	}
 
-	public static long nthFibnocciNumber(int n) {
+	public static long[][] matrixMultiplication(long[][] m1, long[][] m2, long mod) {
+		if (m1[0].length != m2.length)
+			return null;
+		int rows = m1.length, cols = m2[0].length;
+		long[][] result = new long[rows][cols];
+		for (int i = 0; i < rows; i++)
+			for (int j = 0; j < cols; j++)
+				result[i][j] = 0;
+		for (int i = 0; i < rows; i++){
+			for (int j = 0; j < cols; j++){
+				for (int k = 0; k < m1[0].length; k++){
+					result[i][j] += (m1[i][k] * m2[k][j]);
+					result[i][j] %= mod;
+				}
+			}
+		}
+		return result;
+	}
+
+	public static long nthFibonacciRecurrence(long n, long mod){
+		if(n==1 || n==2) return 1;
+		long[][] f1 = new long[2][1];
+		f1[0][0] = 1;
+		f1[1][0] = 1;
+		long[][] t = new long[2][2];
+		t[0][0] = 0;
+		t[0][1] = 1;
+		t[1][0] = 1;
+		t[1][1] = 1;
+		long[][] tpow = powerMatrix(t, n-1, mod);
+		long[][] fn = matrixMultiplication(tpow, f1, mod);
+		return fn[0][0];
+	}
+
+	public static long nthFibnocci(int n) {
 		double rootFive = Math.sqrt(5);
 		double phy = (1 + rootFive) / 2;
 		return Math.round(Math.floor(Math.pow(phy, n) / rootFive + 0.5));
