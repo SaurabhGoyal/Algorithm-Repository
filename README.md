@@ -12,5 +12,6 @@ Directly usable(copy-paste) code.<br>
 <b> codechef- </b>
 - Code for codechef problems
 
-<b> project-euler- </b>
-- Code for project-euler problems
+<b> project-Euler- </b>
+- Code for project-Euler problems
+//These solutions are heavily hard-coded.

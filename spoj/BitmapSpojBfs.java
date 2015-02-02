@@ -6,7 +6,8 @@ import java.util.List;
 import java.util.Queue;
 
 public class BitmapSpojBfs {
-
+	
+	/*
 	public static Pair[][] grid;
 	public static int n, m;
 
@@ -62,6 +63,62 @@ public class BitmapSpojBfs {
 			}
 		}
 		System.out.print(sb.toString());
+	}
+	
+	*/
+	
+	public static int[][] grid;
+	public static int[][] memo;
+	public static int n,m;
+	
+	public static void solve() throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		int t = Integer.parseInt(br.readLine());
+		StringBuilder sb = new StringBuilder("");
+		while (t-- > 0) {
+			String input = br.readLine();
+			if("".equals(input)) input = br.readLine();
+			String[] ip = input.split(" ");
+			n = Integer.parseInt(ip[0]);
+			m = Integer.parseInt(ip[1]);
+			grid = new int[n][m];
+			memo  = new int[n][m];
+			List<Pair> whiteList = new ArrayList<Pair>();
+			for (int i = 0; i < n; i++) {
+				String word = br.readLine();
+				for (int j = 0; j < m; j++) {
+					grid[i][j] = word.charAt(j)-'0';
+					memo[i][j] = Integer.MAX_VALUE;
+					if (word.charAt(j) == '1') {
+						whiteList.add(new Pair(i,j));
+					}
+				}
+			}
+			for (Pair white : whiteList) {
+				//System.out.println("\n===========bfsing for "+white);
+				solveRec(white.i, white.j, 0);
+			}
+			for(int i=0;i<n;i++){
+				for(int j=0;j<m;j++){
+					sb.append(memo[i][j]);
+					if(j<m-1) sb.append(" ");
+				}
+				sb.append("\n");
+			}
+		}
+		System.out.print(sb.toString());
+	}
+
+	private static void solveRec(int i, int j, int dist) {
+		if(i<0||i>=n||j<0||j>=m) return;
+		if(dist<memo[i][j]){
+			memo[i][j] = dist;
+			solveRec(i-1, j, dist+1);
+			solveRec(i+1, j, dist+1);
+			solveRec(i, j-1, dist+1);
+			solveRec(i, j+1, dist+1);
+		}
+		return;
 	}
 
 	public static void main(String[] args) throws Exception {

@@ -43,6 +43,16 @@ public class Library {
 				min = a;
 		return min;
 	}
+	
+	public static long bigMod(String a, long b){
+		//returns a%b;
+		int len = a.length();
+		long mod = (a.charAt(0)-'0')%b;
+		for(int i=1;i<len;i++){
+			mod = (mod*10+(a.charAt(i)-'0'))%b;
+		}
+		return mod;
+	}
 
 	public static String add(String op1, String op2) {
 		int op1Length = op1.length();
@@ -471,8 +481,8 @@ public class Library {
 		for (int i = 1; i < exp; i++) {
 			int carry = 0;
 			for (int j = 0; j < digits.length; j++) {
-				int product = (digits[i] * base) + carry;
-				digits[i] = product % 10;
+				int product = (digits[j] * base) + carry;
+				digits[j] = product % 10;
 				carry = product / 10;
 			}
 		}
