@@ -1,0 +1,72 @@
+#include <stdio.h>
+#include <string.h>
+/*
+
+String[] ip = br.readLine().split(" ");
+char a = ip[0].charAt(0);
+char b = ip[1].charAt(0);
+int l = Integer.parseInt(ip[2]);
+int r = Integer.parseInt(ip[3]);
+int index1 = 0, index2 = 0;
+for (int j = 0; j < 4; j++) {
+	if (a == c[j])
+		index1 = j;
+	if (b == c[j])
+		index2 = j;
+}
+int ans = 0;
+if (n == 1)
+	ans = 0;
+else if (l == 1)
+	ans = dp[r - 1][index1][index2];
+else {
+	ans = dp[r - 1][index1][index2] - dp[l - 1][index1][index2];
+	int extra = (freq[l - 2][index1]) * (freq[r - 1][index2] - freq[l - 1][index2]);
+	ans -= extra;
+}
+sb.append(ans).append("\n");
+*/
+
+int main(void) {
+	char *str;
+	scanf("%s",str);
+	int n = strlen(str);
+	int i,j,k,q;
+	char c[4] = {'c','h','e','f'};
+	int freq[n][4];
+	long long int dp[n][4][4];
+	if (n > 1) {
+		char current = str[0];
+		int ci = 0;
+		for (j = 0; j < 4; j++) {
+			if (c[j] == current)
+				ci = j;
+			freq[0][j] = 0;
+		}
+		freq[0][ci]++;
+		for (i = 1; i < n; i++) {
+			current = str[i];
+			for (j = 0; j < 4; j++) {
+				if (c[j] == current)
+					ci = j;
+				freq[i][j] = freq[i - 1][j];
+			}
+			for (j = 0; j < 4; j++) {
+				for (k = 0; k < 4; k++) {
+					dp[i][j][k] = dp[i - 1][j][k];
+				}
+			}
+			for (j = 0; j < 4; j++) {
+				dp[i][j][ci] += freq[i-1][j];
+			}
+			freq[i][ci]++;
+		}
+	}
+	//scanf("%d",&q);
+	// while(q--){
+	// 	char a, b;
+	// 	int l, r;
+	// 	scanf("%c %c %d %d",&a, &b, &l, &r);
+	// }
+	return 0;
+}

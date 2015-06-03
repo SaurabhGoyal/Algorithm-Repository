@@ -1,77 +1,71 @@
-package spoj;
+package cdc;
 
-import static java.lang.Math.max;
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.PrintWriter;
 
-public class GSS1 {
-	private static Reader in;
-	private static PrintWriter out;
-	private static int[] arr;
+public class SEAGCD {
 
-	public static void main(String[] args) throws IOException {
-		in = new Reader();
-		out = new PrintWriter(System.out, true);
-		int n = in.nextInt();
-		arr = new int[n + 1];
-		for (int i = 1; i <= n; i++) {
-			arr[i] = in.nextInt();
+	public static long mod = 1000000007;
+
+	public static long powerWithMod(long num, long exp, long mod) {
+		long result = 1;
+		while (exp > 0) {
+			if (exp % 2 == 1) {
+				result = (result * num) % mod;
+			}
+			exp >>= 1;
+			num = (num * num) % mod;
 		}
-		SegmentTree root = new SegmentTree(1, n);
-		int t = in.nextInt();
-		while (t-- > 0) {
-			int a = in.nextInt(), b = in.nextInt();
-			out.println(root.query(a, b).maxSum);
-		}
+		return result;
 	}
 
-	static class SegmentTree {
-		public SegmentTree Lchild = null, Rchild = null;
-		public int leftSum, rightSum, maxSum, allSum, start, end;
-
-		public SegmentTree() {
+	public static void solve() throws Exception {
+		// BufferedReader br = new BufferedReader(new
+		// InputStreamReader(System.in));
+		Reader rd = new Reader();
+		StringBuilder sb = new StringBuilder();
+		int t = rd.nextInt();
+		while (t-- > 0) {
+			int n = rd.nextInt();
+			int m = rd.nextInt();
+			int l = rd.nextInt();
+			int r = rd.nextInt();
+			long ans = 0;
+			long[] a = new long[m + 1];
+			int lastBase = 0;
+			for (int i = 1; i <= m; i++) {
+				int base = m / i;
+				if (base == lastBase) {
+					a[i] = a[i - 1];
+					continue;
+				}
+				a[i] = powerWithMod(base, n, mod);
+				lastBase = base;
+			}
+			for (int i = m; i >= 1; i--) {
+				for (int x = 2 * i; x <= m; x += i) {
+					a[i] -= a[x];
+				}
+				a[i] %= mod;
+				if (a[i] < 0)
+					a[i] += mod;
+			}
+			for (int i = l; i <= r; i++) {
+				ans += a[i];
+				ans %= mod;
+			}
+			// ans %= mod;
+			sb.append(ans + "\n");
 		}
+		System.out.print(sb.toString());
+	}
 
-		public SegmentTree(int _start, int _end) {
-			start = _start;
-			end = _end;
-			if (start != end) {
-				int mid = (start + end) >> 1;
-				Lchild = new SegmentTree(start, mid);
-				Rchild = new SegmentTree(mid + 1, end);
-				join(this, Lchild, Rchild);
-			} else
-				leftSum = rightSum = maxSum = allSum = arr[start];
-		}
-
-		public SegmentTree query(int a, int b) {
-			if (a == start && end == b)
-				return this;
-			int mid = (start + end) >> 1;
-			if (a > mid)
-				return Rchild.query(a, b);
-			if (b <= mid)
-				return Lchild.query(a, b);
-			SegmentTree ans = new SegmentTree();
-			join(ans, Lchild.query(a, mid), Rchild.query(mid + 1, b));
-			return ans;
-		}
-
-		public void join(SegmentTree parent, SegmentTree Lchild,
-				SegmentTree Rchild) {
-			parent.allSum = Lchild.allSum + Rchild.allSum;
-			parent.leftSum = max(Lchild.leftSum, Lchild.allSum + Rchild.leftSum);
-			parent.rightSum = max(Rchild.rightSum, Rchild.allSum
-					+ Lchild.rightSum);
-			parent.maxSum = max(max(Lchild.maxSum, Rchild.maxSum),
-					Lchild.rightSum + Rchild.leftSum);
-		}
+	public static void main(String[] args) throws Exception {
+		solve();
 	}
 }
 
-/** Faster input **/
 class Reader {
 	final private int BUFFER_SIZE = 1 << 16;
 	private DataInputStream din;
